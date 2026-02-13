@@ -47,7 +47,7 @@ CONSTANTS (DO NOT CHANGE):
         .header {
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
-            padding: 25px 40px;
+            padding: 40px 40px;
             text-align: center;
             position: relative;
             flex-shrink: 0;
@@ -71,7 +71,7 @@ CONSTANTS (DO NOT CHANGE):
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            height: 85px;
+            height: 170px;
             width: auto;
         }
 
@@ -85,10 +85,10 @@ CONSTANTS (DO NOT CHANGE):
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 0.9fr 1fr;
+            grid-template-columns: 1fr 0.85fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 10px;
-            padding: 20px 30px;
+            gap: 0px;
+            padding: 14px 0px;
             flex: 1;
             align-items: center;
             justify-items: center;
@@ -123,19 +123,30 @@ CONSTANTS (DO NOT CHANGE):
 
         .info-box {
             width: 100%;
-            max-width: 380px;
+            max-width: 480px;
             overflow: visible;
             display: flex;
             flex-direction: column;
             padding-top: 0;
+            min-height: 280px;
+        }
+
+        .main-content .info-box:first-child,
+        .main-content .info-box.box-green {
+            margin: 0 -10px;
+        }
+
+        .main-content .info-box.box-red,
+        .main-content .info-box.box-yellow {
+            margin: 0 -10px;
         }
 
         .info-box .box-header {
-            padding: 10px 32px;
+            padding: 12px 40px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.35rem;
             text-align: center;
-            border-radius: 24px;
+            border-radius: 28px;
             margin: 0 14px;
             border: 2px solid;
             white-space: nowrap;
@@ -145,9 +156,9 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .info-box .box-content {
-            padding: 12px 16px;
+            padding: 22px 30px;
             flex: 1;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1.5px solid;
             margin-top: -16px;
         }
@@ -155,9 +166,9 @@ CONSTANTS (DO NOT CHANGE):
         .info-box .data-item {
             display: flex;
             justify-content: space-between;
-            padding: 7px 0;
+            padding: 14px 0;
             border-bottom: 1px solid #eee;
-            font-size: 1rem;
+            font-size: 1.45rem;
         }
 
         .info-box .data-item:last-child {
@@ -246,7 +257,7 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .legend-box {
-            margin-top: 10px;
+            margin-top: 6px;
             padding: 10px 25px;
             background: #fafafa;
             border-radius: 10px;
@@ -334,7 +345,7 @@ CONSTANTS (DO NOT CHANGE):
                 display: inline-block;
                 vertical-align: middle;
                 margin: 0 10px;
-                height: 50px;
+                height: 100px;
             }
 
             .header h1 {
@@ -574,6 +585,8 @@ CONSTANTS (DO NOT CHANGE):
             bop: 20
         };
 
+        const RING_THICKNESS = 28;
+
         // ============================================
         // UTILITY FUNCTIONS
         // ============================================
@@ -590,7 +603,7 @@ CONSTANTS (DO NOT CHANGE):
         function describeArc(cx, cy, r, startAngle, endAngle) {
             const start = polarToCartesian(cx, cy, r, endAngle);
             const end = polarToCartesian(cx, cy, r, startAngle);
-            const innerR = r - 30; // ring thickness
+            const innerR = r - RING_THICKNESS;
             
             const startInner = polarToCartesian(cx, cy, innerR, endAngle);
             const endInner = polarToCartesian(cx, cy, innerR, startAngle);
@@ -667,8 +680,8 @@ CONSTANTS (DO NOT CHANGE):
             const svg = document.getElementById('ringChart');
             const cx = 200;
             const cy = 200;
-            const outerR = 145;
-            const innerR = 105;
+            const outerR = 160;
+            const innerR = 132;
             const gap = 1.5;
             
             const totalScore = dashboardData.operational + dashboardData.surveillance + 
@@ -732,7 +745,7 @@ CONSTANTS (DO NOT CHANGE):
                 if (seg.value < seg.max) {
                     const emptyPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
                     emptyPath.setAttribute("d", describeArc(cx, cy, outerR, emptyStart, emptyEnd));
-                    emptyPath.setAttribute("fill", COLORS.grey);
+                    emptyPath.setAttribute("fill", "#ffffff");
                     emptyPath.setAttribute("stroke", seg.color);
                     emptyPath.setAttribute("stroke-width", "2");
                     svg.appendChild(emptyPath);
@@ -764,7 +777,7 @@ CONSTANTS (DO NOT CHANGE):
             
             const scoreText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             scoreText.setAttribute("x", cx);
-            scoreText.setAttribute("y", cy + 50);
+            scoreText.setAttribute("y", cy + 70);
             scoreText.setAttribute("class", "ring-center-score");
             scoreText.setAttribute("font-size", "72");
             scoreText.setAttribute("fill", "#333");
