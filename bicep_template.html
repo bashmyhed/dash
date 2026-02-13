@@ -1,0 +1,787 @@
+<!-- 
+BICEP HEALTH CHECK DASHBOARD TEMPLATE
+
+TO CREATE A NEW VERSION:
+1. Copy this file
+2. Edit the 'dashboardData' object (lines 15-45)
+3. Update location name and date
+4. Change all percentage/count values as needed
+5. Update image paths if different
+6. Save with new name (e.g., bicep_shq_abc.html)
+
+CONSTANTS (DO NOT CHANGE):
+- Ring segment maximums: 40, 20, 20, 20
+- Color codes: Blue #2E5C8A, Green #4A7C59, Red #C14543, Yellow #D4A92C
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BICEP Health Check Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1600px;
+            aspect-ratio: 16 / 9;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header .subheading {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .header .logo-left,
+        .header .logo-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 80px;
+            width: auto;
+        }
+
+        .header .logo-left {
+            left: 40px;
+        }
+
+        .header .logo-right {
+            right: 40px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            padding: 25px 30px;
+            flex: 1;
+            align-items: center;
+            justify-items: center;
+        }
+
+        .main-content .info-box:first-child {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .main-content .ring-container {
+            grid-column: 2;
+            grid-row: 1 / 3;
+            align-self: center;
+            justify-self: center;
+        }
+
+        .main-content .info-box.box-green {
+            grid-column: 3;
+            grid-row: 1;
+        }
+
+        .main-content .info-box.box-red {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .main-content .info-box.box-yellow {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .info-box {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .info-box .box-header {
+            padding: 18px 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .info-box .box-content {
+            padding: 18px;
+        }
+
+        .info-box .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1.1rem;
+        }
+
+        .info-box .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-box .data-item .label {
+            color: #555;
+        }
+
+        .info-box .data-item .value {
+            font-weight: 600;
+            color: #222;
+        }
+
+        /* Box 1 - Blue */
+        .box-blue .box-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .box-blue .box-content {
+            background: #E8F4FC;
+        }
+
+        /* Box 2 - Green */
+        .box-green .box-header {
+            background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+        }
+
+        .box-green .box-content {
+            background: #E8F8F0;
+        }
+
+        /* Box 3 - Red */
+        .box-red .box-header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .box-red .box-content {
+            background: #FDE8E7;
+        }
+
+        /* Box 4 - Yellow */
+        .box-yellow .box-header {
+            background: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%);
+            color: #222;
+        }
+
+        .box-yellow .box-content {
+            background: #FEF9E7;
+        }
+
+        .ring-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .ring-chart {
+            width: 420px;
+            height: 420px;
+        }
+
+        .ring-center-text {
+            text-anchor: middle;
+        }
+
+        .ring-center-title {
+            font-size: 22px;
+            fill: #333;
+            font-weight: 600;
+        }
+
+        .ring-center-score {
+            font-size: 64px;
+            font-weight: 700;
+            fill: #3498db;
+        }
+
+        .legend-box {
+            margin-top: 15px;
+            padding: 15px 30px;
+            background: #fafafa;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            text-align: center;
+        }
+
+        .legend-box h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .dot-blue { background: #3498db; }
+        .dot-green { background: #27ae60; }
+        .dot-red { background: #e74c3c; }
+        .dot-yellow { background: #f1c40f; }
+
+        @media (max-width: 1200px) {
+            body {
+                padding: 15px;
+            }
+            
+            .dashboard-container {
+                aspect-ratio: auto;
+                min-height: 100vh;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto auto;
+            }
+
+            .main-content .info-box:first-child {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .main-content .ring-container {
+                grid-column: 1 / 3;
+                grid-row: 2;
+            }
+
+            .main-content .info-box.box-green {
+                grid-column: 2;
+                grid-row: 1;
+            }
+
+            .main-content .info-box.box-red {
+                grid-column: 1;
+                grid-row: 3;
+            }
+
+            .main-content .info-box.box-yellow {
+                grid-column: 2;
+                grid-row: 3;
+            }
+
+            .header .logo-left,
+            .header .logo-right {
+                position: static;
+                transform: none;
+                display: inline-block;
+                vertical-align: middle;
+                margin: 0 10px;
+                height: 50px;
+            }
+
+            .header h1 {
+                display: inline-block;
+                font-size: 2rem;
+            }
+
+            .header .subheading {
+                display: block;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .main-content .info-box:first-child,
+            .main-content .ring-container,
+            .main-content .info-box.box-green,
+            .main-content .info-box.box-red,
+            .main-content .info-box.box-yellow {
+                grid-column: 1;
+            }
+
+            .main-content .info-box:first-child { grid-row: 1; }
+            .main-content .ring-container { grid-row: 2; }
+            .main-content .info-box.box-green { grid-row: 3; }
+            .main-content .info-box.box-red { grid-row: 4; }
+            .main-content .info-box.box-yellow { grid-row: 5; }
+
+            .info-box {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .ring-chart {
+                width: 280px;
+                height: 280px;
+            }
+
+            .ring-center-score {
+                font-size: 48px;
+            }
+            
+            .ring-center-title {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="header">
+            <img src="" alt="Left Logo" class="logo-left" id="logoLeft">
+            <h1>Border Infrastructure Health Check</h1>
+            <p class="subheading" id="locationDate"></p>
+            <img src="" alt="Right Logo" class="logo-right" id="logoRight">
+        </header>
+
+        <div class="main-content">
+            <!-- Box 1 - Operational Health (Blue) -->
+            <div class="info-box box-blue">
+                <div class="box-header">Operational Health Report</div>
+                <div class="box-content">
+                    <div class="data-item">
+                        <span class="label">Total AOR</span>
+                        <span class="value"><span id="totalAOR">0</span> km</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Fenced</span>
+                        <span class="value"><span id="fenced">0</span>%</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Unfenced</span>
+                        <span class="value"><span id="unfenced">0</span>%</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Road</span>
+                        <span class="value"><span id="road">0</span> km</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Observation Clear</span>
+                        <span class="value"><span id="observationClear">0</span>%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ring Chart -->
+            <div class="ring-container">
+                <svg class="ring-chart" viewBox="0 0 400 400" id="ringChart">
+                    <!-- Segments will be drawn by JavaScript -->
+                </svg>
+            </div>
+
+            <!-- Box 2 - Surveillance Effectiveness (Green) -->
+            <div class="info-box box-green">
+                <div class="box-header">Surveillance Effectiveness</div>
+                <div class="box-content">
+                    <div class="data-item">
+                        <span class="label">Cameras Installed</span>
+                        <span class="value"><span id="camerasInstalled">0</span></span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Area Covered</span>
+                        <span class="value"><span id="areaCovered">0</span>%</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Area Uncovered</span>
+                        <span class="value"><span id="areaUncovered">0</span>%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Box 3 - BN HQ Elements (Red) -->
+            <div class="info-box box-red">
+                <div class="box-header">BN HQ Elements</div>
+                <div class="box-content">
+                    <div class="data-item">
+                        <span class="label">Available</span>
+                        <span class="value"><span id="bnhqAvailable">0</span>%</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Not Available</span>
+                        <span class="value"><span id="bnhqNotAvailable">0</span>%</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Need Improvement</span>
+                        <span class="value"><span id="bnhqNeedImprovement">0</span>%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Box 4 - BOP Elements (Yellow) -->
+            <div class="info-box box-yellow">
+                <div class="box-header">BOP Elements</div>
+                <div class="box-content">
+                    <div class="data-item">
+                        <span class="label">Available</span>
+                        <span class="value"><span id="bopAvailable">0</span>%</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Not Available</span>
+                        <span class="value"><span id="bopNotAvailable">0</span>%</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Need Improvement</span>
+                        <span class="value"><span id="bopNeedImprovement">0</span>%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend-box">
+            <h3>Distribution of BICEP Score</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="legend-dot dot-blue"></span>
+                    <span>40% from Operational Health</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot dot-green"></span>
+                    <span>20% from Surveillance</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot dot-red"></span>
+                    <span>20% from BN HQ Elements</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot dot-yellow"></span>
+                    <span>20% from BOP Elements</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // DATA CONFIGURATION - EDIT THIS SECTION
+        // ============================================
+        const dashboardData = {
+            // Header Information
+            location: "SHQ XYZ",
+            date: "April 2026",
+            leftImagePath: "ftr.png",
+            rightImagePath: "bsf.png",
+            
+            // Ring Chart Segments (filled values - max values are constants)
+            operational: 38,      // out of 40 (Blue)
+            surveillance: 12,    // out of 20 (Green)
+            bnhq: 15,            // out of 20 (Red)
+            bop: 8,              // out of 20 (Yellow)
+            
+            // Box 1 - Operational Health Report (Blue)
+            totalAOR: 55,
+            fenced: 45,
+            unfenced: 3,
+            road: 8,
+            observationClear: 66,
+            
+            // Box 2 - Surveillance Effectiveness (Green)
+            camerasInstalled: 55,
+            areaCovered: 69,
+            areaUncovered: 31,
+            
+            // Box 3 - BN HQ Elements (Red)
+            bnhqAvailable: 60,
+            bnhqNotAvailable: 25,
+            bnhqNeedImprovement: 15,
+            
+            // Box 4 - BOP Elements (Yellow)
+            bopAvailable: 70,
+            bopNotAvailable: 20,
+            bopNeedImprovement: 10
+        };
+
+        // ============================================
+        // CONSTANTS - DO NOT CHANGE
+        // ============================================
+        const COLORS = {
+            blue: '#3498db',
+            green: '#27ae60',
+            red: '#e74c3c',
+            yellow: '#f1c40f',
+            grey: '#E0E0E0',
+            greyDark: '#BDBDBD'
+        };
+
+        const MAX_VALUES = {
+            operational: 40,
+            surveillance: 20,
+            bnhq: 20,
+            bop: 20
+        };
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        
+        /**
+         * Calculate SVG arc path
+         * @param {number} cx - center x
+         * @param {number} cy - center y
+         * @param {number} r - radius
+         * @param {number} startAngle - start angle in degrees
+         * @param {number} endAngle - end angle in degrees
+         * @returns {string} SVG path d attribute
+         */
+        function describeArc(cx, cy, r, startAngle, endAngle) {
+            const start = polarToCartesian(cx, cy, r, endAngle);
+            const end = polarToCartesian(cx, cy, r, startAngle);
+            const innerR = r - 25; // ring thickness
+            
+            const startInner = polarToCartesian(cx, cy, innerR, endAngle);
+            const endInner = polarToCartesian(cx, cy, innerR, startAngle);
+            
+            const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+            
+            return [
+                "M", start.x, start.y,
+                "A", r, r, 0, largeArcFlag, 0, end.x, end.y,
+                "L", endInner.x, endInner.y,
+                "A", innerR, innerR, 0, largeArcFlag, 1, startInner.x, startInner.y,
+                "Z"
+            ].join(" ");
+        }
+
+        function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+            const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+            return {
+                x: centerX + (radius * Math.cos(angleInRadians)),
+                y: centerY + (radius * Math.sin(angleInRadians))
+            };
+        }
+
+        // ============================================
+        // RENDER FUNCTIONS
+        // ============================================
+
+        function updateHeader() {
+            document.getElementById('locationDate').textContent = `${dashboardData.location} | As on ${dashboardData.date}`;
+            
+            const logoLeft = document.getElementById('logoLeft');
+            const logoRight = document.getElementById('logoRight');
+            
+            if (dashboardData.leftImagePath) {
+                logoLeft.src = dashboardData.leftImagePath;
+                logoLeft.style.display = 'inline';
+            } else {
+                logoLeft.style.display = 'none';
+            }
+            
+            if (dashboardData.rightImagePath) {
+                logoRight.src = dashboardData.rightImagePath;
+                logoRight.style.display = 'inline';
+            } else {
+                logoRight.style.display = 'none';
+            }
+        }
+
+        function updateBoxes() {
+            // Box 1 - Operational Health
+            document.getElementById('totalAOR').textContent = dashboardData.totalAOR;
+            document.getElementById('fenced').textContent = dashboardData.fenced;
+            document.getElementById('unfenced').textContent = dashboardData.unfenced;
+            document.getElementById('road').textContent = dashboardData.road;
+            document.getElementById('observationClear').textContent = dashboardData.observationClear;
+            
+            // Box 2 - Surveillance
+            document.getElementById('camerasInstalled').textContent = dashboardData.camerasInstalled;
+            document.getElementById('areaCovered').textContent = dashboardData.areaCovered;
+            document.getElementById('areaUncovered').textContent = dashboardData.areaUncovered;
+            
+            // Box 3 - BN HQ
+            document.getElementById('bnhqAvailable').textContent = dashboardData.bnhqAvailable;
+            document.getElementById('bnhqNotAvailable').textContent = dashboardData.bnhqNotAvailable;
+            document.getElementById('bnhqNeedImprovement').textContent = dashboardData.bnhqNeedImprovement;
+            
+            // Box 4 - BOP
+            document.getElementById('bopAvailable').textContent = dashboardData.bopAvailable;
+            document.getElementById('bopNotAvailable').textContent = dashboardData.bopNotAvailable;
+            document.getElementById('bopNeedImprovement').textContent = dashboardData.bopNeedImprovement;
+        }
+
+        function drawRingChart() {
+            const svg = document.getElementById('ringChart');
+            const cx = 200;
+            const cy = 200;
+            const outerR = 160;
+            const innerR = 135;
+            const gap = 8; // gap between segments in degrees
+            
+            // Calculate total score
+            const totalScore = dashboardData.operational + dashboardData.surveillance + 
+                              dashboardData.bnhq + dashboardData.bop;
+            
+            // Segment definitions: [value, max, color, startAngleOffset]
+            // We want: Blue (40%) top-left, Green (20%) top-right, Red (20%) bottom-left, Yellow (20%) bottom-right
+            const segments = [
+                { 
+                    value: dashboardData.operational, 
+                    max: MAX_VALUES.operational, 
+                    color: COLORS.blue,
+                    centerAngle: -90 - 45 // Top-left quadrant
+                },
+                { 
+                    value: dashboardData.surveillance, 
+                    max: MAX_VALUES.surveillance, 
+                    color: COLORS.green,
+                    centerAngle: -90 + 45 // Top-right quadrant
+                },
+                { 
+                    value: dashboardData.bnhq, 
+                    max: MAX_VALUES.bnhq, 
+                    color: COLORS.red,
+                    centerAngle: 90 + 45 // Bottom-left quadrant
+                },
+                { 
+                    value: dashboardData.bop, 
+                    max: MAX_VALUES.bop, 
+                    color: COLORS.yellow,
+                    centerAngle: 90 - 45 // Bottom-right quadrant
+                }
+            ];
+            
+            // Clear existing content
+            svg.innerHTML = '';
+            
+            // Draw each segment
+            segments.forEach((seg, index) => {
+                const filledPercent = seg.value / seg.max;
+                const totalDegrees = 90 - gap; // Each quadrant has ~90 degrees minus gap
+                const filledDegrees = totalDegrees * filledPercent;
+                const emptyDegrees = totalDegrees - filledDegrees;
+                
+                const quadrantSize = 90;
+                const startOffset = gap / 2;
+                
+                // Calculate angles based on quadrant position
+                let baseStartAngle, baseEndAngle;
+                
+                switch(index) {
+                    case 0: // Top-left (Blue) - from 180 to 270
+                        baseStartAngle = 180 + startOffset;
+                        baseEndAngle = 270 - startOffset;
+                        break;
+                    case 1: // Top-right (Green) - from 270 to 360
+                        baseStartAngle = 270 + startOffset;
+                        baseEndAngle = 360 - startOffset;
+                        break;
+                    case 2: // Bottom-left (Red) - from 90 to 180
+                        baseStartAngle = 90 + startOffset;
+                        baseEndAngle = 180 - startOffset;
+                        break;
+                    case 3: // Bottom-right (Yellow) - from 0 to 90
+                        baseStartAngle = 0 + startOffset;
+                        baseEndAngle = 90 - startOffset;
+                        break;
+                }
+                
+                // Calculate actual filled portion angles
+                const emptyEndAngle = baseEndAngle - (baseEndAngle - baseStartAngle) * (seg.value / seg.max);
+                
+                // Draw filled portion (swap: filled from emptyEndAngle to baseEndAngle)
+                if (seg.value > 0) {
+                    const filledPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    filledPath.setAttribute("d", describeArc(cx, cy, outerR, emptyEndAngle, baseEndAngle));
+                    filledPath.setAttribute("fill", seg.color);
+                    filledPath.setAttribute("stroke", seg.color);
+                    filledPath.setAttribute("stroke-width", "1");
+                    svg.appendChild(filledPath);
+                }
+                
+                // Draw empty (grey) portion (swap: empty from baseStartAngle to emptyEndAngle)
+                if (seg.value < seg.max) {
+                    const emptyPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    emptyPath.setAttribute("d", describeArc(cx, cy, outerR, baseStartAngle, emptyEndAngle));
+                    emptyPath.setAttribute("fill", COLORS.grey);
+                    emptyPath.setAttribute("stroke", COLORS.greyDark);
+                    emptyPath.setAttribute("stroke-width", "1");
+                    svg.appendChild(emptyPath);
+                }
+            });
+            
+            // Add center text
+            const textGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            textGroup.setAttribute("class", "ring-center-text");
+            
+            const titleText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            titleText.setAttribute("x", cx);
+            titleText.setAttribute("y", cy - 10);
+            titleText.setAttribute("class", "ring-center-title");
+            titleText.textContent = "BICEP Health Score";
+            
+            const scoreText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            scoreText.setAttribute("x", cx);
+            scoreText.setAttribute("y", cy + 40);
+            scoreText.setAttribute("class", "ring-center-score");
+            scoreText.textContent = `${totalScore}%`;
+            
+            textGroup.appendChild(titleText);
+            textGroup.appendChild(scoreText);
+            svg.appendChild(textGroup);
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        
+        function init() {
+            updateHeader();
+            updateBoxes();
+            drawRingChart();
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
