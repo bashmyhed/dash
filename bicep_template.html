@@ -85,10 +85,10 @@ CONSTANTS (DO NOT CHANGE):
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 0.7fr 1fr;
+            grid-template-columns: 1fr 0.9fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 6px;
-            padding: 15px 50px;
+            gap: 10px;
+            padding: 20px 30px;
             flex: 1;
             align-items: center;
             justify-items: center;
@@ -123,7 +123,7 @@ CONSTANTS (DO NOT CHANGE):
 
         .info-box {
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
             overflow: visible;
             display: flex;
             flex-direction: column;
@@ -131,13 +131,13 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .info-box .box-header {
-            padding: 10px 35px;
+            padding: 10px 32px;
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             text-align: center;
-            border-radius: 25px;
-            margin: 0 15px;
-            border: 2.5px solid;
+            border-radius: 24px;
+            margin: 0 14px;
+            border: 2px solid;
             white-space: nowrap;
             position: relative;
             z-index: 1;
@@ -145,19 +145,19 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .info-box .box-content {
-            padding: 14px 18px;
+            padding: 12px 16px;
             flex: 1;
             border-radius: 10px;
             border: 1.5px solid;
-            margin-top: -18px;
+            margin-top: -16px;
         }
 
         .info-box .data-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 7px 0;
             border-bottom: 1px solid #eee;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .info-box .data-item:last-child {
@@ -225,8 +225,8 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .ring-chart {
-            width: 260px;
-            height: 260px;
+            width: 350px;
+            height: 350px;
         }
 
         .ring-center-text {
@@ -234,13 +234,13 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .ring-center-title {
-            font-size: 24px;
+            font-size: 32px;
             fill: #333;
             font-weight: 600;
         }
 
         .ring-center-score {
-            font-size: 64px;
+            font-size: 80px;
             font-weight: 700;
             fill: #333;
         }
@@ -380,11 +380,11 @@ CONSTANTS (DO NOT CHANGE):
             }
 
             .ring-center-score {
-                font-size: 48px;
+                font-size: 60px;
             }
             
             .ring-center-title {
-                font-size: 16px;
+                font-size: 20px;
             }
         }
     </style>
@@ -667,8 +667,8 @@ CONSTANTS (DO NOT CHANGE):
             const svg = document.getElementById('ringChart');
             const cx = 200;
             const cy = 200;
-            const outerR = 120;
-            const innerR = 90;
+            const outerR = 145;
+            const innerR = 105;
             const gap = 1.5;
             
             const totalScore = dashboardData.operational + dashboardData.surveillance + 
@@ -746,27 +746,27 @@ CONSTANTS (DO NOT CHANGE):
             
             const bicepText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             bicepText.setAttribute("x", cx);
-            bicepText.setAttribute("y", cy - 25);
+            bicepText.setAttribute("y", cy - 40);
             bicepText.setAttribute("class", "ring-center-title");
-            bicepText.setAttribute("font-size", "24");
+            bicepText.setAttribute("font-size", "32");
             bicepText.setAttribute("font-weight", "700");
             bicepText.setAttribute("fill", "#333");
             bicepText.textContent = "BICEP";
             
             const healthText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             healthText.setAttribute("x", cx);
-            healthText.setAttribute("y", cy + 2);
+            healthText.setAttribute("y", cy - 10);
             healthText.setAttribute("class", "ring-center-title");
-            healthText.setAttribute("font-size", "20");
+            healthText.setAttribute("font-size", "24");
             healthText.setAttribute("font-weight", "700");
             healthText.setAttribute("fill", "#333");
             healthText.textContent = "Health Score";
             
             const scoreText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             scoreText.setAttribute("x", cx);
-            scoreText.setAttribute("y", cy + 55);
+            scoreText.setAttribute("y", cy + 50);
             scoreText.setAttribute("class", "ring-center-score");
-            scoreText.setAttribute("font-size", "52");
+            scoreText.setAttribute("font-size", "72");
             scoreText.setAttribute("fill", "#333");
             scoreText.textContent = `${totalScore}%`;
             
