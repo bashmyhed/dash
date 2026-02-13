@@ -29,21 +29,16 @@ CONSTANTS (DO NOT CHANGE):
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            background: #1a1a2e;
+            background: #ffffff;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            padding: 0;
+            margin: 0;
         }
 
         .dashboard-container {
             width: 100%;
-            max-width: 1600px;
-            aspect-ratio: 16 / 9;
+            min-height: 100vh;
             background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -52,21 +47,21 @@ CONSTANTS (DO NOT CHANGE):
         .header {
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
-            padding: 20px 40px;
+            padding: 25px 40px;
             text-align: center;
             position: relative;
             flex-shrink: 0;
         }
 
         .header h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             letter-spacing: 1px;
         }
 
         .header .subheading {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             opacity: 0.9;
             font-weight: 400;
         }
@@ -76,7 +71,7 @@ CONSTANTS (DO NOT CHANGE):
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            height: 80px;
+            height: 85px;
             width: auto;
         }
 
@@ -90,10 +85,10 @@ CONSTANTS (DO NOT CHANGE):
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1.2fr 1fr;
+            grid-template-columns: 1fr 1.5fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 20px;
-            padding: 25px 30px;
+            gap: 15px;
+            padding: 15px 20px;
             flex: 1;
             align-items: center;
             justify-items: center;
@@ -128,30 +123,41 @@ CONSTANTS (DO NOT CHANGE):
 
         .info-box {
             width: 100%;
-            max-width: 320px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            max-width: 380px;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            padding-top: 0;
         }
 
         .info-box .box-header {
-            padding: 18px 20px;
-            color: white;
+            padding: 10px 40px;
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             text-align: center;
+            border-radius: 25px;
+            margin: 0 15px;
+            border: 2.5px solid;
+            white-space: nowrap;
+            position: relative;
+            z-index: 1;
+            background: #fff;
         }
 
         .info-box .box-content {
-            padding: 18px;
+            padding: 14px 18px;
+            flex: 1;
+            border-radius: 12px;
+            border: 1.5px solid;
+            margin-top: -18px;
         }
 
         .info-box .data-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
+            padding: 10px 0;
             border-bottom: 1px solid #eee;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
         }
 
         .info-box .data-item:last-child {
@@ -169,39 +175,46 @@ CONSTANTS (DO NOT CHANGE):
 
         /* Box 1 - Blue */
         .box-blue .box-header {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-color: #3498db;
+            color: #3498db;
         }
 
         .box-blue .box-content {
             background: #E8F4FC;
+            border-color: #3498db;
         }
 
         /* Box 2 - Green */
         .box-green .box-header {
-            background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+            border-color: #27ae60;
+            color: #27ae60;
         }
 
         .box-green .box-content {
             background: #E8F8F0;
+            border-color: #27ae60;
         }
 
         /* Box 3 - Red */
         .box-red .box-header {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border-color: #e74c3c;
+            color: #e74c3c;
         }
 
         .box-red .box-content {
             background: #FDE8E7;
+            border-color: #e74c3c;
         }
 
         /* Box 4 - Yellow */
         .box-yellow .box-header {
-            background: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%);
-            color: #222;
+            border-color: #d4ac0d;
+            color: #d4ac0d;
         }
 
         .box-yellow .box-content {
             background: #FEF9E7;
+            border-color: #d4ac0d;
         }
 
         .ring-container {
@@ -211,8 +224,8 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .ring-chart {
-            width: 420px;
-            height: 420px;
+            width: 480px;
+            height: 480px;
         }
 
         .ring-center-text {
@@ -220,20 +233,20 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .ring-center-title {
-            font-size: 22px;
+            font-size: 24px;
             fill: #333;
             font-weight: 600;
         }
 
         .ring-center-score {
-            font-size: 64px;
+            font-size: 72px;
             font-weight: 700;
             fill: #3498db;
         }
 
         .legend-box {
-            margin-top: 15px;
-            padding: 15px 30px;
+            margin-top: 10px;
+            padding: 10px 25px;
             background: #fafafa;
             border-radius: 10px;
             border: 1px solid #eee;
@@ -241,9 +254,9 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .legend-box h3 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #333;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
@@ -251,20 +264,20 @@ CONSTANTS (DO NOT CHANGE):
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 25px;
+            gap: 20px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1rem;
+            gap: 8px;
+            font-size: 0.95rem;
             color: #555;
         }
 
         .legend-dot {
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
         }
 
