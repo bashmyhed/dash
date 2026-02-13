@@ -85,10 +85,10 @@ CONSTANTS (DO NOT CHANGE):
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1.5fr 1fr;
+            grid-template-columns: 1fr 1.8fr 1fr;
             grid-template-rows: 1fr 1fr;
             gap: 15px;
-            padding: 15px 20px;
+            padding: 15px 25px;
             flex: 1;
             align-items: center;
             justify-items: center;
@@ -123,7 +123,7 @@ CONSTANTS (DO NOT CHANGE):
 
         .info-box {
             width: 100%;
-            max-width: 380px;
+            max-width: 500px;
             overflow: visible;
             display: flex;
             flex-direction: column;
@@ -131,13 +131,13 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .info-box .box-header {
-            padding: 10px 40px;
+            padding: 14px 50px;
             font-weight: 600;
-            font-size: 1.15rem;
+            font-size: 1.4rem;
             text-align: center;
-            border-radius: 25px;
-            margin: 0 15px;
-            border: 2.5px solid;
+            border-radius: 30px;
+            margin: 0 20px;
+            border: 3px solid;
             white-space: nowrap;
             position: relative;
             z-index: 1;
@@ -145,19 +145,19 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .info-box .box-content {
-            padding: 14px 18px;
+            padding: 20px 24px;
             flex: 1;
-            border-radius: 12px;
-            border: 1.5px solid;
-            margin-top: -18px;
+            border-radius: 15px;
+            border: 2px solid;
+            margin-top: -22px;
         }
 
         .info-box .data-item {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 14px 0;
             border-bottom: 1px solid #eee;
-            font-size: 1.05rem;
+            font-size: 1.3rem;
         }
 
         .info-box .data-item:last-child {
@@ -224,8 +224,8 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .ring-chart {
-            width: 480px;
-            height: 480px;
+            width: 416px;
+            height: 416px;
         }
 
         .ring-center-text {
@@ -239,7 +239,7 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .ring-center-score {
-            font-size: 72px;
+            font-size: 70px;
             font-weight: 700;
             fill: #3498db;
         }
@@ -667,108 +667,85 @@ CONSTANTS (DO NOT CHANGE):
             const cx = 200;
             const cy = 200;
             const outerR = 160;
-            const innerR = 135;
-            const gap = 8; // gap between segments in degrees
+            const innerR = 140;
+            const gap = 1.5;
             
-            // Calculate total score
             const totalScore = dashboardData.operational + dashboardData.surveillance + 
                               dashboardData.bnhq + dashboardData.bop;
+            const totalMax = 100;
             
-            // Segment definitions: [value, max, color, startAngleOffset]
-            // We want: Blue (40%) top-left, Green (20%) top-right, Red (20%) bottom-left, Yellow (20%) bottom-right
             const segments = [
-                { 
-                    value: dashboardData.operational, 
-                    max: MAX_VALUES.operational, 
-                    color: COLORS.blue,
-                    centerAngle: -90 - 45 // Top-left quadrant
-                },
                 { 
                     value: dashboardData.surveillance, 
                     max: MAX_VALUES.surveillance, 
                     color: COLORS.green,
-                    centerAngle: -90 + 45 // Top-right quadrant
+                    ratio: 0.2
                 },
                 { 
                     value: dashboardData.bnhq, 
                     max: MAX_VALUES.bnhq, 
                     color: COLORS.red,
-                    centerAngle: 90 + 45 // Bottom-left quadrant
+                    ratio: 0.2
                 },
                 { 
                     value: dashboardData.bop, 
                     max: MAX_VALUES.bop, 
                     color: COLORS.yellow,
-                    centerAngle: 90 - 45 // Bottom-right quadrant
+                    ratio: 0.2
+                },
+                { 
+                    value: dashboardData.operational, 
+                    max: MAX_VALUES.operational, 
+                    color: COLORS.blue,
+                    ratio: 0.4
                 }
             ];
             
-            // Clear existing content
             svg.innerHTML = '';
             
-            // Draw each segment
-            segments.forEach((seg, index) => {
+            let currentAngle = -18;
+            
+            segments.forEach((seg) => {
+                const segSize = 360 * seg.ratio;
+                const startAngle = currentAngle + gap;
+                const endAngle = currentAngle + segSize - gap;
+                
                 const filledPercent = seg.value / seg.max;
-                const totalDegrees = 90 - gap; // Each quadrant has ~90 degrees minus gap
-                const filledDegrees = totalDegrees * filledPercent;
-                const emptyDegrees = totalDegrees - filledDegrees;
+                const filledAngle = (segSize - gap * 2) * filledPercent;
+                const emptyAngle = (segSize - gap * 2) - filledAngle;
                 
-                const quadrantSize = 90;
-                const startOffset = gap / 2;
+                const filledStart = startAngle;
+                const filledEnd = startAngle + filledAngle;
+                const emptyStart = filledEnd;
+                const emptyEnd = endAngle;
                 
-                // Calculate angles based on quadrant position
-                let baseStartAngle, baseEndAngle;
-                
-                switch(index) {
-                    case 0: // Top-left (Blue) - from 180 to 270
-                        baseStartAngle = 180 + startOffset;
-                        baseEndAngle = 270 - startOffset;
-                        break;
-                    case 1: // Top-right (Green) - from 270 to 360
-                        baseStartAngle = 270 + startOffset;
-                        baseEndAngle = 360 - startOffset;
-                        break;
-                    case 2: // Bottom-left (Red) - from 90 to 180
-                        baseStartAngle = 90 + startOffset;
-                        baseEndAngle = 180 - startOffset;
-                        break;
-                    case 3: // Bottom-right (Yellow) - from 0 to 90
-                        baseStartAngle = 0 + startOffset;
-                        baseEndAngle = 90 - startOffset;
-                        break;
-                }
-                
-                // Calculate actual filled portion angles
-                const emptyEndAngle = baseEndAngle - (baseEndAngle - baseStartAngle) * (seg.value / seg.max);
-                
-                // Draw filled portion (swap: filled from emptyEndAngle to baseEndAngle)
                 if (seg.value > 0) {
                     const filledPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    filledPath.setAttribute("d", describeArc(cx, cy, outerR, emptyEndAngle, baseEndAngle));
+                    filledPath.setAttribute("d", describeArc(cx, cy, outerR, filledStart, filledEnd));
                     filledPath.setAttribute("fill", seg.color);
                     filledPath.setAttribute("stroke", seg.color);
-                    filledPath.setAttribute("stroke-width", "1");
+                    filledPath.setAttribute("stroke-width", "3");
                     svg.appendChild(filledPath);
                 }
                 
-                // Draw empty (grey) portion (swap: empty from baseStartAngle to emptyEndAngle)
                 if (seg.value < seg.max) {
                     const emptyPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    emptyPath.setAttribute("d", describeArc(cx, cy, outerR, baseStartAngle, emptyEndAngle));
+                    emptyPath.setAttribute("d", describeArc(cx, cy, outerR, emptyStart, emptyEnd));
                     emptyPath.setAttribute("fill", COLORS.grey);
-                    emptyPath.setAttribute("stroke", COLORS.greyDark);
-                    emptyPath.setAttribute("stroke-width", "1");
+                    emptyPath.setAttribute("stroke", seg.color);
+                    emptyPath.setAttribute("stroke-width", "2");
                     svg.appendChild(emptyPath);
                 }
+                
+                currentAngle += segSize;
             });
             
-            // Add center text
             const textGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
             textGroup.setAttribute("class", "ring-center-text");
             
             const titleText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             titleText.setAttribute("x", cx);
-            titleText.setAttribute("y", cy - 10);
+            titleText.setAttribute("y", cy - 8);
             titleText.setAttribute("class", "ring-center-title");
             titleText.textContent = "BICEP Health Score";
             
