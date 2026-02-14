@@ -85,9 +85,9 @@ CONSTANTS (DO NOT CHANGE):
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 0.85fr 1fr;
+            grid-template-columns: 2fr 0.2fr 2fr;
             grid-template-rows: 1fr 1fr;
-            gap: 0px;
+            gap: 6px;
             padding: 14px 0px;
             flex: 1;
             align-items: center;
@@ -123,28 +123,30 @@ CONSTANTS (DO NOT CHANGE):
 
         .info-box {
             width: 100%;
-            max-width: 480px;
+            max-width: 550px;
             overflow: visible;
             display: flex;
             flex-direction: column;
             padding-top: 0;
-            min-height: 280px;
+            min-height: 320px;
+            position: relative;
+            z-index: 1;
         }
 
         .main-content .info-box:first-child,
         .main-content .info-box.box-green {
-            margin: 0 -10px;
+            margin: 0 50px;
         }
 
         .main-content .info-box.box-red,
         .main-content .info-box.box-yellow {
-            margin: 0 -10px;
+            margin: 0 50px;
         }
 
         .info-box .box-header {
             padding: 12px 40px;
             font-weight: 600;
-            font-size: 1.35rem;
+            font-size: 1.6rem;
             text-align: center;
             border-radius: 28px;
             margin: 0 14px;
@@ -156,19 +158,21 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .info-box .box-content {
-            padding: 22px 30px;
+            padding: 28px 35px 24px 35px;
             flex: 1;
             border-radius: 12px;
             border: 1.5px solid;
             margin-top: -16px;
+            margin-left: 14px;
+            margin-right: 14px;
         }
 
         .info-box .data-item {
             display: flex;
             justify-content: space-between;
-            padding: 14px 0;
+            padding: 16px 0;
             border-bottom: 1px solid #eee;
-            font-size: 1.45rem;
+            font-size: 1.7rem;
         }
 
         .info-box .data-item:last-child {
@@ -232,7 +236,9 @@ CONSTANTS (DO NOT CHANGE):
             display: flex;
             flex-direction: column;
             align-items: center;
-            transform: scaleX(1.25);
+            transform: translateY(-20px) scaleX(1.25);
+            position: relative;
+            z-index: 10;
         }
 
         .ring-chart {
@@ -680,7 +686,7 @@ CONSTANTS (DO NOT CHANGE):
             const svg = document.getElementById('ringChart');
             const cx = 200;
             const cy = 200;
-            const outerR = 160;
+            const outerR = 180;
             const innerR = 132;
             const gap = 1.5;
             
@@ -777,7 +783,7 @@ CONSTANTS (DO NOT CHANGE):
             
             const scoreText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             scoreText.setAttribute("x", cx);
-            scoreText.setAttribute("y", cy + 70);
+            scoreText.setAttribute("y", cy + 80);
             scoreText.setAttribute("class", "ring-center-score");
             scoreText.setAttribute("font-size", "72");
             scoreText.setAttribute("fill", "#333");
