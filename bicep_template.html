@@ -76,11 +76,11 @@ CONSTANTS (DO NOT CHANGE):
         }
 
         .header .logo-left {
-            left: 40px;
+            left: 150px;
         }
 
         .header .logo-right {
-            right: 40px;
+            right: 150px;
         }
 
         .main-content {
@@ -131,6 +131,7 @@ CONSTANTS (DO NOT CHANGE):
             min-height: 320px;
             position: relative;
             z-index: 1;
+            align-self: start;
         }
 
         .main-content .info-box:first-child {
@@ -171,6 +172,9 @@ CONSTANTS (DO NOT CHANGE):
             margin-top: -16px;
             margin-left: 14px;
             margin-right: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .main-content .info-box:first-child .box-header {
@@ -207,8 +211,9 @@ CONSTANTS (DO NOT CHANGE):
 
         .info-box .data-item {
             display: flex;
-            justify-content: space-between;
-            padding: 16px 0;
+            justify-content: center;
+            gap: 40px;
+            padding: 12px 0;
             border-bottom: 1px solid #eee;
             font-size: 1.7rem;
         }
@@ -297,7 +302,6 @@ CONSTANTS (DO NOT CHANGE):
         .ring-center-score {
             font-size: 80px;
             font-weight: 700;
-            fill: #333;
         }
 
         .legend-box {
@@ -581,8 +585,12 @@ CONSTANTS (DO NOT CHANGE):
             leftImagePath: "ftr.png",
             rightImagePath: "bsf.png",
             
+            // BICEP Health Score (displayed in center of ring)
+            // Color: <60 = Red, 60-75 = Yellow, >75 = Green
+            bicepScore: 50,
+            
             // Ring Chart Segments (filled values - max values are constants)
-            operational: 38,      // out of 40 (Blue)
+            operational: 30,      // out of 40 (Blue)
             surveillance: 12,    // out of 20 (Green)
             bnhq: 15,            // out of 20 (Red)
             bop: 8,              // out of 20 (Yellow)
@@ -606,8 +614,8 @@ CONSTANTS (DO NOT CHANGE):
             
             // Box 4 - BOP Elements (Yellow)
             bopAvailable: 70,
-            bopNotAvailable: 20,
-            bopNeedImprovement: 10
+            bopNotAvailable: 24,
+            bopNeedImprovement: 18
         };
 
         // ============================================
@@ -728,9 +736,16 @@ CONSTANTS (DO NOT CHANGE):
             const innerR = 132;
             const gap = 1.5;
             
-            const totalScore = dashboardData.operational + dashboardData.surveillance + 
-                              dashboardData.bnhq + dashboardData.bop;
-            const totalMax = 100;
+            // Get BICEP score and determine color based on value
+            const bicepScore = dashboardData.bicepScore;
+            let scoreColor;
+            if (bicepScore < 60) {
+                scoreColor = COLORS.red;      // Red for < 60
+            } else if (bicepScore <= 75) {
+                scoreColor = COLORS.yellow;   // Yellow for 60-75
+            } else {
+                scoreColor = COLORS.green;    // Green for > 75
+            }
             
             const segments = [
                 { 
@@ -798,6 +813,14 @@ CONSTANTS (DO NOT CHANGE):
                 currentAngle += segSize;
             });
             
+            // Add white circle to fill center
+            const centerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            centerCircle.setAttribute("cx", cx);
+            centerCircle.setAttribute("cy", cy);
+            centerCircle.setAttribute("r", outerR - RING_THICKNESS - 2);
+            centerCircle.setAttribute("fill", "#ffffff");
+            svg.appendChild(centerCircle);
+            
             const textGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
             textGroup.setAttribute("class", "ring-center-text");
             
@@ -824,8 +847,8 @@ CONSTANTS (DO NOT CHANGE):
             scoreText.setAttribute("y", cy + 80);
             scoreText.setAttribute("class", "ring-center-score");
             scoreText.setAttribute("font-size", "72");
-            scoreText.setAttribute("fill", "#333");
-            scoreText.textContent = `${totalScore}%`;
+            scoreText.setAttribute("fill", scoreColor);
+            scoreText.textContent = `${bicepScore}%`;
             
             textGroup.appendChild(bicepText);
             textGroup.appendChild(healthText);
