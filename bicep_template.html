@@ -85,9 +85,9 @@ CONSTANTS (DO NOT CHANGE):
 
         .main-content {
             display: grid;
-            grid-template-columns: 2fr 0.2fr 2fr;
+            grid-template-columns: 1fr 0.3fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 6px;
+            gap: 0px;
             padding: 14px 0px;
             flex: 1;
             align-items: center;
@@ -123,7 +123,7 @@ CONSTANTS (DO NOT CHANGE):
 
         .info-box {
             width: 100%;
-            max-width: 550px;
+            max-width: 650px;
             overflow: visible;
             display: flex;
             flex-direction: column;
@@ -133,14 +133,20 @@ CONSTANTS (DO NOT CHANGE):
             z-index: 1;
         }
 
-        .main-content .info-box:first-child,
-        .main-content .info-box.box-green {
-            margin: 0 50px;
+        .main-content .info-box:first-child {
+            margin: 0 0 0 -200px;
         }
 
-        .main-content .info-box.box-red,
+        .main-content .info-box.box-green {
+            margin: 0 -200px 0 0;
+        }
+
+        .main-content .info-box.box-red {
+            margin: 0 0 0 -200px;
+        }
+
         .main-content .info-box.box-yellow {
-            margin: 0 50px;
+            margin: 0 -200px 0 0;
         }
 
         .info-box .box-header {
@@ -165,6 +171,22 @@ CONSTANTS (DO NOT CHANGE):
             margin-top: -16px;
             margin-left: 14px;
             margin-right: 14px;
+        }
+
+        .main-content .info-box:first-child .box-content {
+            margin-right: -100px;
+        }
+
+        .main-content .info-box.box-green .box-content {
+            margin-left: -100px;
+        }
+
+        .main-content .info-box.box-red .box-content {
+            margin-right: -100px;
+        }
+
+        .main-content .info-box.box-yellow .box-content {
+            margin-left: -100px;
         }
 
         .info-box .data-item {
